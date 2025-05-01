@@ -1,4 +1,4 @@
-# .github/workflows/train_model.yml  
+# .github/workflows/train_model.yml 
 name: Train and Register XGBoost Model
 
 on:
