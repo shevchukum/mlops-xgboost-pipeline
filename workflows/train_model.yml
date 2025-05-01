@@ -1,0 +1,30 @@
+# .github/workflows/train_model.yml
+name: Train and Register XGBoost Model
+
+on:
+  workflow_dispatch:        # manual start
+  schedule:
+    - cron: '0 2 1 * *'     # 1st day of each month on 02:00
+  repository_dispatch:      # trigger from Prometheus webhook
+    types: [prometheus_trigger]
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install xgboost scikit-learn mlflow pandas numpy
+
+      - name: Run training script
+        env:
+          MLFLOW_TRACKING_URI: http://127.0.0.1:5000  # локальный mlflow сервер
+        run: python train_and_register.py
